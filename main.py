@@ -333,27 +333,53 @@ class DXFToSVGGUI:
         self.create_widgets()
     
     def setup_styles(self):
-        """設定 GUI 樣式"""
+        """設定 GUI 樣式（Dark Mode，全部用 ttk）"""
         style = ttk.Style()
         style.theme_use('clam')
-        
-        # 設定按鈕樣式
-        style.configure('Convert.TButton', 
-                       font=('新細明體', 12, 'bold'),
-                       padding=10)
-        
-        # 設定標籤樣式
-        style.configure('Title.TLabel',
-                       font=('新細明體', 14, 'bold'),
-                       foreground='#2c3e50')
+
+        PRIMARY = '#42A5F5'
+        PRIMARY_DARK = '#1976D2'
+        BG = '#23272E'
+        CARD = '#2C313A'
+        TEXT = '#E3EAF2'
+        DISABLED = '#555555'
+
+        style.configure('.',
+            font=('Microsoft JhengHei', 12),
+            background=BG,
+            foreground=TEXT,
+        )
+        style.configure('TLabel', background=BG, foreground=TEXT)
+        style.configure('TFrame', background=BG)
+        style.configure('TLabelframe', background=CARD, borderwidth=0, relief='flat')
+        style.configure('TLabelframe.Label', font=('Microsoft JhengHei', 12, 'bold'), foreground=PRIMARY, background=CARD)
+        style.configure('TEntry', fieldbackground=BG, foreground=TEXT, bordercolor=PRIMARY, lightcolor=PRIMARY, darkcolor=PRIMARY, borderwidth=2, relief='flat')
+        style.map('TEntry', fieldbackground=[('readonly', BG)], foreground=[('readonly', TEXT)])
+        style.configure('Convert.TButton',
+            font=('Microsoft JhengHei', 13, 'bold'),
+            padding=12,
+            borderwidth=0,
+            relief='flat',
+            background=PRIMARY,
+            foreground='#fff')
+        style.map('Convert.TButton',
+            background=[('active', PRIMARY_DARK), ('disabled', DISABLED)],
+            foreground=[('disabled', '#fff')])
     
     def create_widgets(self):
-        """建立 GUI 元件"""
+        """建立 GUI 元件（Dark Mode，全部用 ttk）"""
         # 主標題
         title_label = ttk.Label(self.root, text="DXF 線條轉 SVG 轉換器", 
-                               style='Title.TLabel')
-        title_label.pack(pady=20)
-        
+                               font=('Microsoft JhengHei', 22, 'bold'),
+                               foreground='#42A5F5', anchor='center', background='#23272E')
+        title_label.pack(pady=(32, 8))
+
+        # 副標題
+        subtitle_label = ttk.Label(self.root, text="將 DXF 內所有線條一鍵轉成 SVG 圖片",
+                                   font=('Microsoft JhengHei', 12),
+                                   foreground='#B0BEC5', anchor='center', background='#23272E')
+        subtitle_label.pack(pady=(0, 24))
+
         # 檔案選擇框架
         self.create_file_selection_frame()
         
@@ -370,70 +396,76 @@ class DXFToSVGGUI:
         self.create_status_bar()
     
     def create_file_selection_frame(self):
-        """建立檔案選擇框架"""
-        file_frame = ttk.LabelFrame(self.root, text="檔案選擇", padding=10)
-        file_frame.pack(fill='x', padx=20, pady=10)
-        
+        """建立檔案選擇框架（Dark Mode 卡片，ttk）"""
+        file_frame = ttk.Labelframe(self.root, text="檔案選擇", padding=18, style='TLabelframe')
+        file_frame.pack(fill='x', padx=48, pady=(0, 24))
+        file_frame.columnconfigure(1, weight=1)
+
         # DXF 檔案選擇
-        ttk.Label(file_frame, text="DXF 檔案:").grid(row=0, column=0, sticky='w', pady=5)
-        ttk.Entry(file_frame, textvariable=self.dxf_path, width=50).grid(row=0, column=1, padx=5, pady=5)
-        ttk.Button(file_frame, text="瀏覽", command=self.browse_dxf_file).grid(row=0, column=2, pady=5)
+        ttk.Label(file_frame, text="DXF 檔案:", width=10, anchor='e').grid(row=0, column=0, sticky='e', pady=12, padx=(10,0))
+        dxf_entry = ttk.Entry(file_frame, textvariable=self.dxf_path, width=48, style='TEntry')
+        dxf_entry.grid(row=0, column=1, padx=8, pady=12, sticky='ew')
+        ttk.Button(file_frame, text="瀏覽", command=self.browse_dxf_file, style='Convert.TButton').grid(row=0, column=2, padx=8, pady=12)
         
         # 輸出檔案選擇
-        ttk.Label(file_frame, text="輸出檔案:").grid(row=1, column=0, sticky='w', pady=5)
-        ttk.Entry(file_frame, textvariable=self.output_path, width=50).grid(row=1, column=1, padx=5, pady=5)
-        ttk.Button(file_frame, text="瀏覽", command=self.browse_output_file).grid(row=1, column=2, pady=5)
+        ttk.Label(file_frame, text="輸出檔案:", width=10, anchor='e').grid(row=1, column=0, sticky='e', pady=12, padx=(10,0))
+        out_entry = ttk.Entry(file_frame, textvariable=self.output_path, width=48, style='TEntry')
+        out_entry.grid(row=1, column=1, padx=8, pady=12, sticky='ew')
+        ttk.Button(file_frame, text="瀏覽", command=self.browse_output_file, style='Convert.TButton').grid(row=1, column=2, padx=8, pady=12)
     
     def create_settings_frame(self):
-        """建立設定框架"""
-        settings_frame = ttk.LabelFrame(self.root, text="轉換設定", padding=10)
-        settings_frame.pack(fill='x', padx=20, pady=10)
-        
+        """建立設定框架（Dark Mode 卡片，ttk）"""
+        settings_frame = ttk.Labelframe(self.root, text="轉換設定", padding=18, style='TLabelframe')
+        settings_frame.pack(fill='x', padx=48, pady=(0, 24))
+        settings_frame.columnconfigure(1, weight=1)
+        settings_frame.columnconfigure(3, weight=1)
+
         # SVG 尺寸設定
-        ttk.Label(settings_frame, text="SVG 寬度:").grid(row=0, column=0, sticky='w', pady=5)
+        ttk.Label(settings_frame, text="SVG 寬度:").grid(row=0, column=0, sticky='e', pady=12, padx=(10,0))
         self.svg_width_var = tk.StringVar(value="800")
-        ttk.Entry(settings_frame, textvariable=self.svg_width_var, width=10).grid(row=0, column=1, padx=5, pady=5)
-        
-        ttk.Label(settings_frame, text="SVG 高度:").grid(row=0, column=2, sticky='w', padx=(20,0), pady=5)
+        ttk.Entry(settings_frame, textvariable=self.svg_width_var, width=10, style='TEntry').grid(row=0, column=1, padx=8, pady=12)
+
+        ttk.Label(settings_frame, text="SVG 高度:").grid(row=0, column=2, sticky='e', padx=(20,0), pady=12)
         self.svg_height_var = tk.StringVar(value="600")
-        ttk.Entry(settings_frame, textvariable=self.svg_height_var, width=10).grid(row=0, column=3, padx=5, pady=5)
-        
+        ttk.Entry(settings_frame, textvariable=self.svg_height_var, width=10, style='TEntry').grid(row=0, column=3, padx=8, pady=12)
+
         # 線條寬度設定
-        ttk.Label(settings_frame, text="線條寬度:").grid(row=1, column=0, sticky='w', pady=5)
+        ttk.Label(settings_frame, text="線條寬度:").grid(row=1, column=0, sticky='e', pady=12, padx=(10,0))
         self.stroke_width_var = tk.StringVar(value="1")
-        ttk.Entry(settings_frame, textvariable=self.stroke_width_var, width=10).grid(row=1, column=1, padx=5, pady=5)
+        ttk.Entry(settings_frame, textvariable=self.stroke_width_var, width=10, style='TEntry').grid(row=1, column=1, padx=8, pady=12)
     
     def create_convert_button(self):
-        """建立轉換按鈕"""
-        button_frame = ttk.Frame(self.root)
-        button_frame.pack(pady=20)
+        """建立轉換按鈕（Dark Mode 風格，ttk）"""
+        button_frame = ttk.Frame(self.root, style='TFrame')
+        button_frame.pack(pady=18)
         
         self.convert_button = ttk.Button(button_frame, text="開始轉換", 
                                         style='Convert.TButton',
                                         command=self.start_conversion)
-        self.convert_button.pack()
+        self.convert_button.pack(fill='x', ipadx=10, ipady=2)
         
         # 建立開啟圖片按鈕（初始時禁用）
         self.open_image_button = ttk.Button(button_frame, text="開啟圖片", 
                                            style='Convert.TButton',
                                            command=self.open_image,
                                            state='disabled')
-        self.open_image_button.pack(pady=5)
+        self.open_image_button.pack(fill='x', ipadx=10, ipady=2, pady=(10,0))
     
     def create_log_frame(self):
-        """建立日誌框架"""
-        log_frame = ttk.LabelFrame(self.root, text="轉換日誌", padding=10)
-        log_frame.pack(fill='both', expand=True, padx=20, pady=10)
-        
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=10, width=70)
-        self.log_text.pack(fill='both', expand=True)
+        """建立日誌框架（Dark Mode 卡片，ttk）"""
+        log_frame = ttk.Labelframe(self.root, text="轉換日誌", padding=12, style='TLabelframe')
+        log_frame.pack(fill='both', expand=True, padx=48, pady=(0, 24))
+
+        self.log_text = scrolledtext.ScrolledText(log_frame, height=8, font=('Microsoft JhengHei', 11), bg='#23272E', fg='#fff', relief='flat', borderwidth=0, insertbackground='#fff', highlightthickness=2, highlightbackground='#42A5F5')
+        self.log_text.pack(fill='both', expand=True, padx=10, pady=10)
     
     def create_status_bar(self):
-        """建立狀態列"""
+        """建立狀態列（Dark Mode 風格，ttk）"""
         self.status_var = tk.StringVar(value="就緒")
         status_bar = ttk.Label(self.root, textvariable=self.status_var, 
-                              relief='sunken', anchor='w')
-        status_bar.pack(side='bottom', fill='x')
+                              anchor='w', font=('Microsoft JhengHei', 10),
+                              background='#263238', foreground='#42A5F5')
+        status_bar.pack(side='bottom', fill='x', pady=(0,0))
     
     def browse_dxf_file(self):
         """瀏覽 DXF 檔案"""
