@@ -203,10 +203,6 @@ class DXFToSVG:
         svg.set('height', str(self.svg_height))
         svg.set('viewBox', f'0 0 {self.svg_width} {self.svg_height}')
         svg.set('xmlns', 'http://www.w3.org/2000/svg')
-        background = SubElement(svg, 'rect')
-        background.set('width', str(self.svg_width))
-        background.set('height', str(self.svg_height))
-        background.set('fill', '#23272E')
         svg_elements = self.entities_to_svg_elements(entities)
         for element in svg_elements:
             svg.append(element)
