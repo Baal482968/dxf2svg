@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100">
-  <path d="M180.0,70.5 L180.0,39.1 L170.3,29.5 L95.2,29.5 L20.0,29.5 L21.1,55.6 L44.8,55.9" stroke="#2c3e50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <text x="100.0" y="35.0" text-anchor="middle" font-family="新細明體, PMingLiU, serif" font-size="12" fill="#2c3e50">{param1}</text>
-  <text x="100.0" y="85.541429853135" text-anchor="middle" font-family="新細明體, PMingLiU, serif" font-size="12" fill="#2c3e50">{total}</text>
-</svg>
